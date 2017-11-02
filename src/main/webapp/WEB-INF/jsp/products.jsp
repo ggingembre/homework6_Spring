@@ -38,6 +38,9 @@
                         <td class="tb1" style="width:30%">Price :</td>
                         <td class="tb1" style="width:60%">${product.price}</td>
                     </tr>
+                <tr>
+                    <td class="tb2" style="width:50%"> <a href="/productmanagement/product/${product.id}">Learn more about product</a> </td>
+                </tr>
             </div>
         </table>
 

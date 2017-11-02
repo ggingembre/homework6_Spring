@@ -1,9 +1,9 @@
 package com.app.controllers;
 
 import com.app.util.InitDefaultEntities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +14,7 @@ import com.app.entities.*;
 import com.app.services.UserService;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ public class ShowUsersController {
 
     private final UserService usersService;
     private final PasswordEncoder passwordEncoder;
+    private final Logger logger = LoggerFactory.getLogger(Product.class);
 
     @Autowired
     public ShowUsersController(UserService usersService, PasswordEncoder passwordEncoder) {
@@ -48,36 +50,22 @@ public class ShowUsersController {
    public void initDefaultUsers() {
         InitDefaultEntities.initDefaultUsers(usersService,passwordEncoder);
    }
-    //}
 
-//    @RequestMapping(method = RequestMethod.POST, value = "/create", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-//    public void createUser(@RequestParam("username") @NotEmpty String username,
-//                           @NotEmpty String password,
-//                           @RequestParam(required = false) String email
-////                           ,@RequestHeader(value = "x", required = false) String x,
-////                           @CookieValue(value = "y", required = false) String y
-//                            ) throws IOException {
-//        User user = new User();
-//        user.setUsername(username);
-//        user.setPassword(passwordEncoder.encode(password));
-//        user.setEmail(email);
-//        usersService.save(user);
-//    }
-//
-//
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public String logout() {
         // http://localhost:8080/login?logout
         return "redirect:/login?logout";
     }
-//
-//
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ModelAndView handleError(HttpServletRequest req, Exception ex) {
+        logger.error("Request: " + req.getRequestURL() + " raised " + ex);
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("exception", ex);
+        mav.addObject("url", req.getRequestURL());
+        mav.setViewName("error");
+        return mav;
     }
-//    @ExceptionHandler(IOException.class)
-//    public ResponseEntity<String> handleIOException(IOException ex) {
-//        return ResponseEntity.status(HttpStatus.INSUFFICIENT_STORAGE).build();
-//    }
+
 }
