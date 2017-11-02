@@ -2,6 +2,8 @@ package com.app.services;
 
 import com.app.dao.ProductDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.app.entities.Product;
@@ -53,10 +55,33 @@ public class ProductService {
         dao.delete(entity);
     }
 
-    @Transactional
-    public void delete(Product entity) {
-        dao.delete(entity);
-    }
+    @Transactional(readOnly = true)
+    public List<Product> findAllExample (Product product) {
 
+        if (product.getName().isEmpty()) {
+            product.setName(null);
+        }
+
+        if (product.getProducer().isEmpty()) {
+            product.setProducer(null);
+        }
+
+        if (product.getDescription().isEmpty()) {
+            product.setDescription(null);
+        }
+
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withIgnorePaths("id","price");
+
+        // ignore numbers, because I did not find how to deal with ExampleMatcher and numbers
+        // I will write my own logic about numbers in the controller, but it is an area of improvement for this code
+
+        Example<Product> example = Example.of(product, matcher);
+
+        return dao.findAll(example);
+    }
 
 }

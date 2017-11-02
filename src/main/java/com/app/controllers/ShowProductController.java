@@ -99,6 +99,31 @@ public class ShowProductController{
         return "productUpdated";
     }
 
+    @GetMapping("/search")
+    public String projectSearch(Model model) {
+        model.addAttribute("productSearch", new Product());
+        return "productSearch";
+    }
+
+    @PostMapping("/search")
+    public ModelAndView SearchResults(@ModelAttribute Product product){
+
+        // search with query by example based on String criteria
+        List<Product> products = productService.findAllExample(product);
+
+        // getting rid of projects not matching number criteria
+        // Returns: -1, 0, or 1 as this BigDecimal is numerically less than, equal to, or greater than val.
+        if (product.getPrice() != null){
+            products.removeIf(p -> p.getPrice().compareTo(product.getPrice()) == 1);
+        }
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("productSearchResult");
+        modelAndView.addObject("products", products);
+        return modelAndView;
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ModelAndView handleError(HttpServletRequest req, Exception ex) {
         logger.error("Request: " + req.getRequestURL() + " raised " + ex);
