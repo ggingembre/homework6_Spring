@@ -1,6 +1,7 @@
 package com.app.entities;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Guillaume Gingembre on 30/10/2017.
@@ -17,16 +18,23 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "user_role")
-    private Role role;
+    //@Column(name = "user_role")
+    //private Role role;
 
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_roles")
+    @Column(name = "role") // Column name in user_roles
+    private Collection<Role> roles;
+
+    /*
     public User() {}
 
     public User(String username, String password, Role role) {
         this.username = username;
         this.password = password;
         this.role = role;
-    }
+    } */
 
     @Override
     public boolean equals(Object o) {
@@ -59,20 +67,28 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
-    }
+    // public Role getRole() {
+    //    return role;
+    // }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+        public Collection<Role> getRoles() {
+            return roles;
+        }
+
+        public void setRoles(Collection<Role> roles) {
+            this.roles = roles;
+        }
+
+     // public void setRole(Role role) {
+        // this.role = role;
+    // }
 
     @Override
     public String toString() {
         return "User{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", role=" + role +
+                ", role=" + roles +
                 '}';
     }
 }

@@ -68,6 +68,10 @@ public class ModelConfiguration {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
+
+    // This reads file scriptresources, which is the db.sql file, so it resets the database each time we run this:
+
+    /*
     @Bean
     public DataSourceInitializer dataSourceInitializer(DataSource dataSource){
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
@@ -77,5 +81,7 @@ public class ModelConfiguration {
         initializer.setDataSource(dataSource);
         initializer.setDatabasePopulator(populator);
         return initializer;
-    }
+    } */
+
+
 }

@@ -27,12 +27,12 @@
                         <td class="tb1" style="width:60%">${product.name}</td>
                     </tr>
                     <tr>
-                        <td class="tb1" style="width:30%">Project Producer :</td>
+                        <td class="tb1" style="width:30%">Producer :</td>
                         <td class="tb1" style="width:60%">${product.producer}</td>
                     </tr>
                     <tr>
                         <td class="tb1" style="width:30%">Description :</td>
-                        <td class="tb1" style="width:60%">${project.projectDescription}</td>
+                        <td class="tb1" style="width:60%">${product.description}</td>
                     </tr>
                     <tr>
                         <td class="tb1" style="width:30%">Price :</td>
