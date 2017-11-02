@@ -18,6 +18,15 @@
 
 <body>
 
+<table>
+    <tr>
+        <td class="tb2" style="width:95%"> <a href="/productmanagement/product/search">Search a product</a> </td>
+    </tr>
+</table>
+<br>
+
+<p>Here is the list of all our products: </p>
+
     <c:forEach var="product" items="${products}">
     <div class="first" style="float: left; width:27%; margin:0.5%; box-shadow: 10px 10px 5px grey; background-color: #f1f1f1">
         <table>
