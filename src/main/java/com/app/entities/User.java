@@ -67,21 +67,13 @@ public class User {
         this.password = password;
     }
 
-    // public Role getRole() {
-    //    return role;
-    // }
-
-        public Collection<Role> getRoles() {
+    public Collection<Role> getRoles() {
             return roles;
         }
 
-        public void setRoles(Collection<Role> roles) {
+    public void setRoles(Collection<Role> roles) {
             this.roles = roles;
         }
-
-     // public void setRole(Role role) {
-        // this.role = role;
-    // }
 
     @Override
     public String toString() {

@@ -8,44 +8,48 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 /**
- * Main model application configuration. Uses Hibernate for data base management
+ * Created by Guillaume Gingembre on 03/11/2017.
  */
+
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = {"com.app.dao", "com.app.services"})
-@PropertySource("classpath:database.properties")
+@ComponentScan(basePackages = {"com.app.dao"})
+@PropertySource("classpath:test.properties")
 @EnableJpaRepositories("com.app.dao")
-public class ModelConfiguration {
+public class TestServiceConfiguration {
 
     @Value("${db.url}")
     private String url;
-    @Value("${db.username}")
-    private String username;
-    @Value("${db.password}")
+    @Value("${db.user}")
+    private String user;
+    @Value("${dn.password}")
     private String password;
     @Value("${db.driver}")
     private String driverClass;
     @Value("${db.dialect}")
     private String hibernateDialect;
-    @Value("classpath:db.sql")
-    private Resource  scriptResource;
+    @Value("classpath:createTestDb.sql")
+    private Resource scriptResource;
+    @Value("classpath:populateTestDb.sql")
+    private Resource fillScript;
 
     @Bean(destroyMethod = "close")
     public BasicDataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setUrl(url);
         dataSource.setDriverClassName(driverClass);
-        dataSource.setUsername(username);
+        dataSource.setUrl(url);
+        dataSource.setUsername(user);
         dataSource.setPassword(password);
         return dataSource;
     }
@@ -55,6 +59,7 @@ public class ModelConfiguration {
         HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
         hibernateJpaVendorAdapter.setShowSql(true);
         hibernateJpaVendorAdapter.setDatabasePlatform(hibernateDialect);
+
 
         LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
         bean.setDataSource(dataSource);
@@ -68,20 +73,16 @@ public class ModelConfiguration {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
-
-    // This reads file scriptresources, which is the db.sql file, so it resets the database each time we run this:
-
-/*
     @Bean
-    public DataSourceInitializer dataSourceInitializer(DataSource dataSource){
+    public DataSourceInitializer dataSourceInitializer(final DataSource dataSource){
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(scriptResource);
+        populator.addScript(fillScript);
 
         DataSourceInitializer initializer = new DataSourceInitializer();
         initializer.setDataSource(dataSource);
         initializer.setDatabasePopulator(populator);
         return initializer;
-    }*/
-
+    }
 
 }
